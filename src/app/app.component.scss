@@ -28,13 +28,22 @@ label {
       display: block;
       margin-bottom: 2px;
     }
-    input{
+    p-inputNumber {
       width: 100%;
     }
   }
 }
+input{
+  width: 100%;
+}
 
 ::ng-deep {
+  p-inputNumber {
+    width: 100%;
+  }
+  .p-inputtext,.p-inputwrapper,.p-inputnumber,p-calendar,.p-calendar{
+    width: 100%;
+  }
   p-table {
     min-width: 1000px !important;
     width: 100%;
@@ -81,6 +90,7 @@ label {
 }
 section{
   padding: 7em 0;
+  height: 100%;
 }
 .container{
   max-width: 1200px;
