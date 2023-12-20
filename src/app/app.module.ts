@@ -13,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 @NgModule({
@@ -32,7 +34,9 @@ import { CalendarModule } from 'primeng/calendar';
     ReactiveFormsModule,
     ToastModule,
     InputNumberModule,
-    CalendarModule
+    CalendarModule,
+    ConfirmDialogModule,
+    DropdownModule
   ],
   providers: [],
   bootstrap: [AppComponent]

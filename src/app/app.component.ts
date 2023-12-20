@@ -1,47 +1,119 @@
 import { Component } from '@angular/core';
 import { AppService } from './app.service';
-import { FormBuilder, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import {
+  FormBuilder,
+  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService, ConfirmationService],
 })
 export class AppComponent {
   title = 'pipeLine';
   list: any = [];
   display: boolean = false;
   formData!: UntypedFormGroup;
-  public form:FormGroup;
-  constructor(private appService: AppService,private _fb: UntypedFormBuilder,fb:FormBuilder,private messageService: MessageService) {
-    this.form = fb.group({
-      name: ["",Validators.required],
-      amount: ["",Validators.required],
-      dueDt: ["",Validators.required],
-    })
+  currencyCode: any = 'INR';
+  amount: any[] = ['INR', 'USD', 'SGD'];
+  // form: UntypedFormGroup | undefined;
+  form!: UntypedFormGroup;
+  param: any = {
+    name: '',
+    amount: 0,
+    dueDt: new Date(),
+    currencyCode: '',
+    id:0
+  };
+  constructor(
+    private appService: AppService,
+    private _fb: UntypedFormBuilder,
+    private fb: FormBuilder,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {
   }
 
   ngOnInit() {
     this.get();
-    this.createForm();
+    this.createForm(this.param);
   }
 
   get() {
     this.appService.get().subscribe((data: any) => {
-      this.list=data;
-      console.log(data);
+      let { content } = data;
+      this.list = content;
     });
   }
-  createForm() {
-    this.showSuccess()
-    console.log(this.form)
+  submitForm() {
+    if (!this.form?.valid) {
+      this.showError();
+      return;
+    }
+    this.appService.post(this.form.value).subscribe((data: any) => {
+      console.log(this.form.value.id)
+      this.showSuccess(this.form.value.id);
+      this.get();
+      this.display = false;
+    });
   }
-  showSuccess() {
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Invoice added successfully' });
+  showSuccess(id:any) {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: `Invoice ${id>0?'updated':'added'} successfully`,
+    });
   }
   showError() {
-    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error occurred' });
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Error occurred',
+    });
+  }
+  confirm(event: Event, id: any) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to delete this record?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+
+      accept: () => {
+        this.appService.delete(id).subscribe((data: any) => {
+          this.get();
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Confirmed',
+            detail: 'Record deleted',
+          });
+        });
+      },
+      reject: () => {
+
+      },
+    });
+  }
+  onCurrencyCodeChange(selectedValue: any) {
+    this.currencyCode = selectedValue;
+  }
+  createForm(param:any){
+    this.form = this.fb.group({
+      name: [param.name, Validators.required],
+      amount: [param.amount, Validators.required],
+      dueDt: [new Date(param.dueDt), Validators.required],
+      currencyCode: [param.currencyCode],
+      createdDt: new Date(),
+      id:param.id,
+    });
   }
 }

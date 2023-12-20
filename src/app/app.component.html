@@ -1,11 +1,12 @@
 <section>
   <p-toast position="top-center"></p-toast>
+  <p-confirmDialog></p-confirmDialog>
   <div class="container">
     <h1 class="col-12 flex justify-content-center">Invoice Table</h1>
     <div class="col-12 flex justify-content-end">
       <p-button
         label="Add"
-        (click)="display = true"
+        (click)="display = true;createForm(param)"
         severity="secondary"
         [rounded]="true"
       ></p-button>
@@ -15,14 +16,16 @@
         [value]="list"
         [tableStyle]="{ 'min-width': '50rem' }"
         class="table"
+        styleClass=" table p-datatable-gridlines"
       >
         <ng-template pTemplate="header">
           <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Created Date</th>
-            <th>Due Date</th>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Due Date</th>
+            <th scope="col">Action</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-product>
@@ -30,13 +33,31 @@
             <td>{{ product.id }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.amount }}</td>
-            <td>{{ product.createdDt }}</td>
-            <td>{{ product.dueDt }}</td>
+            <td>{{ product.createdDt | date :'dd-MM-yyyy'}}</td>
+            <td>{{ product.dueDt | date :'dd-MM-yyyy' }}</td>
+            <td>
+              <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-pencil"
+                (click)="display = true;createForm(product)"
+                class="p-button-rounded p-button-text p-button-success mr-2"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-trash"
+                (click)="confirm($event,product.id)"
+                class="p-button-rounded p-button-text p-button-error mr-2"
+              ></button>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage" let-columns>
           <tr>
-            <td colspan="5">
+            <td colspan="6">
               <h1 class="col-12 flex justify-content-center">
                 No records found
               </h1>
@@ -52,15 +73,29 @@
   <div class="form-grop" [formGroup]="form">
     <div class="pt-3">
       <label>Name</label>
-      <input type="text" pInputText formControlName="name" pInputText />
+      <input type="text" pInputText formControlName="name" class="mb-1" />
+      <!-- <div
+        class="text-red-600"
+        *ngIf="!form.get('name')?.valid"
+      >
+        <small *ngIf="form.get('name')?.touched && form.get('name')?.hasError('required') ">Enter a name</small>
+      </div> -->
     </div>
     <div class="pt-3">
       <label>Amount</label>
-      <p-inputNumber mode="decimal" inputId="minmaxfraction"   formControlName="amount" />
+      <p-inputNumber
+        mode="decimal"
+        inputId="minmaxfraction"
+        formControlName="amount"
+      />
     </div>
     <div class="pt-3">
       <label>Due Date</label>
-      <p-calendar formControlName="dueDt"></p-calendar>
+      <p-calendar formControlName="dueDt" dateFormat="dd-mm-yy"></p-calendar>
+    </div>
+    <div class="pt-3">
+      <label>Due Date</label>
+      <p-dropdown [options]="amount"  [(ngModel)]="currencyCode" placeholder="Select a Currency Code" formControlName="currencyCode"></p-dropdown>
     </div>
   </div>
   <ng-template pTemplate="footer">
@@ -75,7 +110,7 @@
         icon="pi pi-check"
         [rounded]="true"
         severity="secondary"
-        (click)="createForm()"
+        (click)="submitForm()"
       ></p-button>
     </div>
   </ng-template>
