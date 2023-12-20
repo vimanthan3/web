@@ -54,7 +54,7 @@ export class AppComponent {
   }
   submitForm() {
     if (!this.form?.valid) {
-      this.showError();
+      this.showError('Error occurred');
       return;
     }
     this.loader=true;
@@ -63,6 +63,9 @@ export class AppComponent {
       this.showSuccess(this.form.value.id);
       this.get();
       this.display = false;
+    },(error: any) => {
+      this.loader=false;
+      this.showError('Server Down');
     });
   }
   showSuccess(id:any) {
@@ -72,11 +75,11 @@ export class AppComponent {
       detail: `Invoice ${id>0?'updated':'added'} successfully`,
     });
   }
-  showError() {
+  showError(msg:any) {
     this.messageService.add({
       severity: 'error',
       summary: 'Error',
-      detail: 'Error occurred',
+      detail: msg,
     });
   }
   confirm(event: Event, id: any) {
