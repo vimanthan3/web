@@ -1,0 +1,13 @@
+.loader-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  text-align: center;
+  height: 100%;
+  align-items: center;
+  display: grid;
+  width: 100%;
+  background: rgb(235 231 231 / 40%);
+}

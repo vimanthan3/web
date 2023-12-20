@@ -42,7 +42,7 @@
                 type="button"
                 icon="pi pi-pencil"
                 (click)="display = true;createForm(product)"
-                class="p-button-rounded p-button-text p-button-success mr-2"
+                class="styled-box-green p-button-rounded p-button-text p-button-success mr-2"
               ></button>
               <button
                 pButton
@@ -69,6 +69,7 @@
   </div>
 </section>
 <p-sidebar [(visible)]="display" position="right" styleClass="w-30rem">
+  <app-loader *ngIf="loader"></app-loader>
   <ng-template pTemplate="header">Add Invoice</ng-template>
   <div class="form-grop" [formGroup]="form">
     <div class="pt-3">
@@ -111,6 +112,7 @@
         [rounded]="true"
         severity="secondary"
         (click)="submitForm()"
+        [disabled]="loader"
       ></p-button>
     </div>
   </ng-template>

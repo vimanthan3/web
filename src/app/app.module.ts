@@ -15,12 +15,16 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { LoaderComponent } from './loader/loader.component';
+import { RippleModule } from 'primeng/ripple';
 
 
 @NgModule({
   declarations: [
-    AppComponent
-  ],
+    AppComponent,
+      LoaderComponent
+   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -36,7 +40,9 @@ import { DropdownModule } from 'primeng/dropdown';
     InputNumberModule,
     CalendarModule,
     ConfirmDialogModule,
-    DropdownModule
+    DropdownModule,
+    ProgressSpinnerModule,
+    RippleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

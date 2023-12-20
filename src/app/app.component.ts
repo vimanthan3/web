@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { AppService } from './app.service';
 import {
   FormBuilder,
-  FormGroup,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +16,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 })
 export class AppComponent {
   title = 'pipeLine';
+  loader:boolean=false;
   list: any = [];
   display: boolean = false;
   formData!: UntypedFormGroup;
@@ -33,11 +33,12 @@ export class AppComponent {
   };
   constructor(
     private appService: AppService,
-    private _fb: UntypedFormBuilder,
     private fb: FormBuilder,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private primengConfig: PrimeNGConfig
   ) {
+    this.primengConfig.ripple = true;
   }
 
   ngOnInit() {
@@ -56,8 +57,9 @@ export class AppComponent {
       this.showError();
       return;
     }
+    this.loader=true;
     this.appService.post(this.form.value).subscribe((data: any) => {
-      console.log(this.form.value.id)
+      this.loader=false;
       this.showSuccess(this.form.value.id);
       this.get();
       this.display = false;
