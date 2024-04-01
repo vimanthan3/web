@@ -1,1 +1,1 @@
-FROM openjdk.17
+FROM Nodejs21
